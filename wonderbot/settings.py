@@ -119,3 +119,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+DEFAULT_REPOSITORY_URL = "git@github.com:CroceRossaItaliana/jorvik.git"
+DEFAULT_BRANCH = "master"
+
+HIGH_LEVEL_DOMAIN = "staging.sviluppo-gaia.ovh"

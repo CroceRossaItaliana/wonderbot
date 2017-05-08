@@ -25,14 +25,14 @@ class Environment(models.Model):
                 (HTTPS, "HTTPS (SSL)"))
 
     # Model fields
-    name = models.CharField(validators=[validate_environment_name], db_index=True, unique=True)
-    status = models.CharField(choices=STATUS, default=CREATING, blank=False, null=False)
-    repository = models.CharField(blank=False, null=False, default=DEFAULT_REPOSITORY_URL)
-    branch = models.CharField(blank=False, null=False, default=DEFAULT_BRANCH)
-    sha = models.CharField(blank=True)
-    protocol = models.CharField(blank=False, null=False, default=HTTP, choices=PROTOCOL)
+    name = models.CharField(validators=[validate_environment_name], db_index=True, unique=True, max_length=64)
+    status = models.CharField(choices=STATUS, default=CREATING, blank=False, null=False, max_length=16)
+    repository = models.CharField(blank=False, null=False, default=DEFAULT_REPOSITORY_URL, max_length=64)
+    branch = models.CharField(blank=False, null=False, default=DEFAULT_BRANCH, max_length=64)
+    sha = models.CharField(blank=True, max_length=40)
+    protocol = models.CharField(blank=False, null=False, default=HTTP, choices=PROTOCOL, max_length=8)
     created = models.DateTimeField(auto_created=True)
-    updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def url(self):
         return "%s://%s.%s" % (self.protocol, self.name, HIGH_LEVEL_DOMAIN)

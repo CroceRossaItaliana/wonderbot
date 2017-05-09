@@ -40,3 +40,24 @@ class Environment(models.Model):
     def __str__(self):
         return "%s (%s, %s)" % (self.name, self.protocol, self.get_status_display())
 
+    def queue_for_creation(self):
+        self.status = self.CREATING
+        self.save()
+        pass
+
+    def queue_for_deletion(self):
+        self.status = self.DELETING
+        self.save()
+        pass
+
+    def queue_for_update(self):
+        self.status = self.UPDATING
+        self.save()
+
+        pass
+
+    def queue_for_refresh(self):
+        self.status = self.REFRESHING
+        self.save()
+
+        pass

@@ -126,3 +126,8 @@ DEFAULT_REPOSITORY_URL = "git@github.com:CroceRossaItaliana/jorvik.git"
 DEFAULT_BRANCH = "master"
 
 HIGH_LEVEL_DOMAIN = "staging.sviluppo-gaia.ovh"
+
+UWSGI_SOCKETS_PATH = "/tmp"
+
+NGINX_SITES_CONFIGURATION = "/etc/nginx/sites-available"
+NGINX_ROOTS = "/var/www"

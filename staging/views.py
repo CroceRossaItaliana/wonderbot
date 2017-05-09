@@ -59,6 +59,8 @@ def _do_opened_pull_request(number, repo, branch, sha):
     React to a new pull request being opened.
     """
 
+    # TODO check if repository is in list of allowed repositories!
+
     name = _environment_name_for_pr(number)
     environment = Environment(name=name, status=Environment.CREATING,
                               repository=repo, branch=branch, sha=sha)

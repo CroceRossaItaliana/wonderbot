@@ -144,8 +144,8 @@ class Environment(models.Model):
         if not self.db_user:
             return
         self._postgres_cmd("REVOKE ALL ON DATABASE %s FROM %s;" % (self.db_name, self.db_user))
-        self._postgres_cmd("DROP USER %s;" % (self.db_user,))
         self._postgres_cmd("DROP DATABASE %s;" % (self.db_name,))
+        self._postgres_cmd("DROP USER %s;" % (self.db_user,))
 
     def _jorvik_configure(self):
         # Write database configuration

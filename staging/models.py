@@ -138,6 +138,7 @@ class Environment(models.Model):
                          self.db_name, "staging",
                          DB_DUMP_WORKERS, DB_DUMP_FILENAME))
         self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
+        self._postgres_cmd("ALTER DATABASE %s OWNER TO %s;" % (self.db_name, self.db_user))
 
     def _database_delete(self):
         if not self.db_user:

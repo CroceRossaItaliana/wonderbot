@@ -16,7 +16,7 @@ def github_hook(request):
         return HttpResponse("Ignoring non-POST requests.")
 
     # Security signature
-    hub_signature = request.META["HTTP_X_HUB_SIGNATURE"]
+    # hub_signature = request.META["HTTP_X_HUB_SIGNATURE"]
     delivery = request.META["HTTP_X_GITHUB_DELIVERY"]
 
     # TODO check security!

@@ -134,7 +134,7 @@ class Environment(models.Model):
         self._postgres_import_dump()
 
     def _postgres_import_dump(self):
-        cmd.bash_execute("pg_restore -d %s -U %s -j %d --no-owner --no-privileges %s" % (
+        cmd.bash_execute("pg_restore -Fc -d %s -U %s -j %d --no-owner --no-privileges %s" % (
                          self.db_name, "staging",
                          DB_DUMP_WORKERS, DB_DUMP_FILENAME))
         self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))

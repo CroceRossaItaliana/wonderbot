@@ -152,17 +152,26 @@ class Environment(models.Model):
 
     def _jorvik_configure(self):
         # Write database configuration
-        configuration = "[client]\n" \
-                        "host = localhost\n" \
-                        "port = 5432\n" \
-                        "database = %(db_name)s\n" \
-                        "user = %(db_user)s\n" \
-                        "password = %(db_pass)s\n" % {
+        database = "[client]\n" \
+                   "host = localhost\n" \
+                   "port = 5432\n" \
+                   "database = %(db_name)s\n" \
+                   "user = %(db_user)s\n" \
+                   "password = %(db_pass)s\n" % {
             "db_name": self.db_name, "db_user": self.db_user,
             "db_pass": self.db_pass
         }
         cmd.file_write("%s/config/pgsql.cnf" % self._get_nginx_root(),
-                       configuration)
+                       database)
+
+        # Write media configuration
+        media = "[media]\n" \
+                "media_root = %(root)s/media/\n" \
+                "media_url = /media/\n" \
+                "[static]\n" \
+                "static_root = %(root)s/static/\n" \
+                "static_url = /static/\n" % {"root": self._get_nginx_root()}
+        cmd.file_write("%s/config/media.cnf" % self._get_nginx_root(), media)
 
         # Write uwsgi.ini file
         uwsgi_ini = "[uwsgi]\n" \

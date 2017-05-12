@@ -133,7 +133,7 @@ class Environment(models.Model):
         self._postgres_import_dump()
 
     def _postgres_import_dump(self):
-        cmd.bash_execute("PGPASS=%s pg_restore -d %s -U %s -j %d %s" % (
+        cmd.bash_execute("PGPASSWORD=%s pg_restore -d %s -U %s -j %d %s" % (
                          self.db_pass, self.db_name, self.db_user, DB_DUMP_WORKERS, DB_DUMP_FILENAME))
 
     def _database_delete(self):

@@ -23,13 +23,13 @@ def github_commit_status(sha, state, description, url):
         return
 
     assert state in ('success', 'pending', 'error', 'failure')
-    url = "https://api.github.com/repos/%s/statuses/%s" % (DEFAULT_REPOSITORY, sha)
+    request_url = "https://api.github.com/repos/%s/statuses/%s" % (DEFAULT_REPOSITORY, sha)
     payload = json.dumps({"state": state,
                           "description": description,
                           "context": "wonderbot-pr",
                           "url": url})
     headers = {"Authorization": "token %s" % token,}
-    r = requests.post(url, data=payload, headers=headers)
+    r = requests.post(request_url, data=payload, headers=headers)
     print("# %s %s %s" % (url, headers, payload))
     print(r)
 

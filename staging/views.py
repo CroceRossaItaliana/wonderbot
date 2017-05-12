@@ -74,7 +74,6 @@ def _do_opened_pull_request(number, repo, branch, sha):
     """
 
     name = _environment_name_for_pr(number)
-    github_pending(sha)
     environment = Environment(name=name, status=Environment.CREATING,
                               repository=repo, branch=branch, sha=sha)
     environment.save()
@@ -101,7 +100,6 @@ def _do_push(repo, branch, sha):
         return HttpResponse("Ignoring, no environment found for repo %s and branch %s." % (repo, branch),
                             content_type="text/plain")
 
-    github_pending(sha)
     for environment in environments:
         environment.sha = sha
         environment.save()

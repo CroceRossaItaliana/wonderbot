@@ -1,7 +1,7 @@
 from django.db import models
 
 import staging.cmd as cmd
-from staging.github import github_finished
+from staging.github import github_finished, github_pending
 from staging.utils import random_username, random_password
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
@@ -83,6 +83,7 @@ class Environment(models.Model):
         environment_refresh.delay(self)
 
     def do_creation(self):
+        github_pending(self.sha)
         self._git_clone()
         self._python_venv_setup()
         self._database_create()
@@ -103,6 +104,7 @@ class Environment(models.Model):
         self.save()
 
     def do_update(self):
+        github_pending(self.sha)
         self._git_pull()
         self._django_collect_static()
         self.do_refresh()

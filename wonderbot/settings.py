@@ -133,6 +133,9 @@ UWSGI_SOCKETS_PATH = "/tmp"
 NGINX_SITES_CONFIGURATION = "/etc/nginx/sites-available"
 NGINX_ROOTS = "/staging"
 
+DB_DUMP_FILENAME = "/staging/dump"
+DB_DUMP_WORKERS = 8
+
 
 # Celery
 CELERY_TASK_SERIALIZER = 'pickle'

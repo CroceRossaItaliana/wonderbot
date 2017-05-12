@@ -1,9 +1,10 @@
 from django.db import models
 
 import staging.cmd as cmd
+from staging.utils import random_username, random_password
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
-    NGINX_ROOTS
+    NGINX_ROOTS, DB_DUMP_FILENAME, DB_DUMP_WORKERS
 
 
 class Environment(models.Model):
@@ -104,7 +105,6 @@ class Environment(models.Model):
 
     def _nginx_delete(self):
         self._delete_nginx_root()
-        self._uwsgi_delete_socket()
 
     def _git_clone(self):
         cmd.bash_execute("git clone -b %s %s %s" % (self.branch, self.repository, self.name),
@@ -119,36 +119,65 @@ class Environment(models.Model):
         cmd.bash_execute("pip install -r requirements.txt", cwd=self._get_nginx_root(), venv=".venv")
 
     def _database_create(self):
-        pass
+        self._postgres_generate_credentials()
+        self._postgres_cmd("CREATE DATABASE %s;" % self.db_name)
+        self._postgres_cmd("CREATE USER %s WITH PASSWORD '%s';" % (self.db_user, self.db_pass))
+        self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
+        self._postgres_import_dump()
+
+    def _postgres_import_dump(self):
+        cmd.bash_execute("PGPASS=%s pg_restore -d %s -U %s -j %d %s" % (
+                         self.db_pass, self.db_name, self.db_user, DB_DUMP_WORKERS, DB_DUMP_FILENAME))
 
     def _database_delete(self):
-        pass
+        if not self.db_user:
+            return
+        self._postgres_cmd("REVOKE ALL ON DATABASE %s FROM %s;" % (self.db_name, self.db_user))
+        self._postgres_cmd("DROP USER %s;" % (self.db_user,))
+        self._postgres_cmd("DROP DATABASE %s;" % (self.db_name,))
 
-    def _uwsgi_reload(self):
-        pass
+    def _jorvik_configure(self):
+        configuration = "[client]\n" \
+                        "host = localhost\n" \
+                        "port = 5432\n" \
+                        "database = %(db_name)s\n" \
+                        "user = %(db_user)s\n" \
+                        "password = %(db_pass)s\n" % {
+            "db_name": self.db_name, "db_user": self.db_user,
+            "db_pass": self.db_pass
+        }
+        cmd.file_write("%s/config/pgsql.cnf" % self._get_nginx_root(),
+                       configuration)
 
     def _uwsgi_touch(self):
         cmd.bash_execute("touch uwsgi.ini", cwd=self._get_nginx_root())
 
     def _database_refresh(self):
-        pass
+        self._database_delete()
+        self._database_create()
 
     def _django_cmd(self, command):
         return cmd.bash_execute("DJANGO_SETTINGS_MODULE=jorvik.settings python manage.py %s" % command,
                                 cwd=self._get_nginx_root(), venv=".venv")
+
+    def _postgres_cmd(self, command, user="staging", password=None, database="staging"):
+        if password:
+            command = "PGPASSWORD=%s %s" % (password, command)
+        command = "psql -U %s %s -c \"%s\"" % (user, database, command)
+        return cmd.bash_execute(command)
+
+    def _postgres_generate_credentials(self):
+        username = random_username(8)
+        self.db_name = "staging_%s" + username
+        self.db_user = "staging_%s" + username
+        self.db_user = random_password(24)
+        self.save()
 
     def _django_apply_migrations(self):
         self._django_cmd("migrate --noinput")
 
     def _django_collect_static(self):
         self._django_cmd("collectstatic --noinput")
-
-    def _uwsgi_delete_socket(self):
-        filename = self._get_uwsgi_socket_filename()
-        cmd.file_delete(filename)
-
-    def _get_uwsgi_socket_filename(self):
-        return "%s/%s.socket" % (UWSGI_SOCKETS_PATH, self.name)
 
     def _get_nginx_root(self):
         return "%s/%s" % (NGINX_ROOTS, self.name)

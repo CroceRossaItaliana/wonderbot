@@ -28,10 +28,10 @@
                 </thead>
                 {% for environment in environments %}
                     <tr class="{{ environment.get_display_class }}">
-                        <td>{{ environment.name }}</td>
+                        <td style="font-weight: bold;">{{ environment.name }}</td>
                         <td>{{ environment.repository }}</td>
                         <td><code>{{ environment.branch }}</code></td>
-                        <td><code>{{ environment.sha }}</code></td>
+                        <td style="font-size: smaller;"><code>{{ environment.sha }}</code></td>
                         <td>{{ environment.get_status_display }}</td>
                         <td><a href="{{ environment.url }}" target="_new">
                             {{ environment.url }}

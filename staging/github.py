@@ -1,4 +1,4 @@
-from wonderbot.settings import DEFAULT_REPOSITORY, HOME_URL
+from wonderbot.settings import DEFAULT_REPOSITORY, HOME_URL, GITHUB_TOKEN_FILE
 
 import json
 import requests
@@ -10,7 +10,7 @@ def github_token():
     Returns None if no token is found.
     """
     try:
-        with open("~/.github_token", "rt") as f:
+        with open(GITHUB_TOKEN_FILE, "rt") as f:
             return f.readline().rstrip("\n")
     except:
         return None

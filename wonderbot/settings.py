@@ -139,6 +139,8 @@ NGINX_ROOTS = "/staging"
 DB_DUMP_FILENAME = "/staging/dump"
 DB_DUMP_WORKERS = 8
 
+GITHUB_TOKEN_FILE = "/home/staging/.github_token"
+
 
 # Celery
 CELERY_TASK_SERIALIZER = 'pickle'

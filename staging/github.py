@@ -27,7 +27,7 @@ def github_commit_status(sha, state, description, url):
     payload = json.dumps({"state": state,
                           "description": description,
                           "context": "wonderbot-pr",
-                          "url": url})
+                          "target_url": url})
     headers = {"Authorization": "token %s" % token,}
     r = requests.post(request_url, data=payload, headers=headers)
     print("# %s %s %s" % (url, headers, payload))

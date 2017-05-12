@@ -5,7 +5,7 @@ from celery import Celery
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wonderbot.settings')
 
-app = Celery('wonderbot', broker='redis://localhost')
+app = Celery('wonderbot', broker='redis://localhost', )
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 

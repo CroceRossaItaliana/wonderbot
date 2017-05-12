@@ -1,7 +1,6 @@
 from django.db import models
 
 import staging.cmd as cmd
-from staging.nginx import NginxConfigurationFile, _nginx_reload
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
     NGINX_ROOTS
@@ -37,6 +36,11 @@ class Environment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    # Database info
+    db_name = models.CharField(blank=True, max_length=64)
+    db_user = models.CharField(blank=True, max_length=64)
+    db_pass = models.CharField(blank=True, max_length=64)
+
     def host(self):
         return "%s.%s" % (self.name, HIGH_LEVEL_DOMAIN)
 
@@ -71,19 +75,20 @@ class Environment(models.Model):
         environment_refresh.delay(self)
 
     def do_creation(self):
-        self._nginx_setup()
-        self._nginx_ssl_setup()
         self._git_clone()
         self._python_venv_setup()
         self._database_create()
         self._django_apply_migrations()
         self._django_collect_static()
+        self._jorvik_configure()
+        self._uwsgi_touch()
         self.status = self.ACTIVE
         self.save()
 
     def do_refresh(self):
         self._database_refresh()
         self._django_apply_migrations()
+        self._uwsgi_touch()
         self.status = self.ACTIVE
         self.save()
 
@@ -93,48 +98,24 @@ class Environment(models.Model):
         self.do_refresh()
 
     def do_delete(self):
-        self._uwsgi_stop()
         self._nginx_delete()
-        self._nginx_ssl_delete()
         self._database_delete()
         self.delete()
 
-    def _nginx_setup(self):
-        self._nginx_reload()
-
-    def _nginx_ssl_setup(self):
-        pass
-
     def _nginx_delete(self):
         self._delete_nginx_root()
-        self._nginx_delete_configuration()
-        self._nginx_reload()
         self._uwsgi_delete_socket()
 
-    def _nginx_delete_configuration(self):
-        conf = NginxConfigurationFile(environment=self)
-        conf.delete()
-
-    def _nginx_create_configuration(self):
-        conf = NginxConfigurationFile(environment=self)
-        conf.save()
-
-    def _nginx_ssl_delete(self):
-        pass
-
-    def _nginx_reload(self):
-        _nginx_reload()
-
     def _git_clone(self):
-        cmd.bash_execute("git clone -b %s %s" % (self.branch, self.repository),
-                         cwd=self._get_nginx_root())
+        cmd.bash_execute("git clone -b %s %s %s" % (self.branch, self.repository, self.name),
+                         cwd=NGINX_ROOTS)
 
     def _git_pull(self):
         cmd.bash_execute("git pull",
                          cwd=self._get_nginx_root())
 
     def _python_venv_setup(self):
-        cmd.bash_execute("virtualenv -ppython3 .venv", cwd=self._get_nginx_root())
+        cmd.bash_execute("python3 -m virtualenv -ppython3 .venv", cwd=self._get_nginx_root())
         cmd.bash_execute("pip install -r requirements.txt", cwd=self._get_nginx_root(), venv=".venv")
 
     def _database_create(self):
@@ -146,14 +127,14 @@ class Environment(models.Model):
     def _uwsgi_reload(self):
         pass
 
-    def _uwsgi_stop(self):
-        pass
+    def _uwsgi_touch(self):
+        cmd.bash_execute("touch uwsgi.ini", cwd=self._get_nginx_root())
 
     def _database_refresh(self):
         pass
 
     def _django_cmd(self, command):
-        return cmd.bash_execute("python manage.py %s" % command,
+        return cmd.bash_execute("DJANGO_SETTINGS_MODULE=jorvik.settings python manage.py %s" % command,
                                 cwd=self._get_nginx_root(), venv=".venv")
 
     def _django_apply_migrations(self):

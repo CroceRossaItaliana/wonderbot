@@ -131,4 +131,9 @@ HIGH_LEVEL_DOMAIN = "sviluppo-gaia.ovh"
 UWSGI_SOCKETS_PATH = "/tmp"
 
 NGINX_SITES_CONFIGURATION = "/etc/nginx/sites-available"
-NGINX_ROOTS = "/var/www"
+NGINX_ROOTS = "/staging"
+
+
+# Celery
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_ACCEPT_CONTENT = ['pickle']

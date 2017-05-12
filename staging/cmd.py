@@ -1,17 +1,20 @@
+import subprocess
+import sys
+
 
 def bash_execute(command, stdout=None, stderr=None, cwd=None, venv=None):
-    if venv:
-        command = "source %s/bin/activate &&" % (venv, command)
 
+    if venv:
+        command = ". %s/bin/activate && %s" % (venv, command)
     if cwd:
         command = "cd %s && %s" % (cwd, command)
+    #stdout = stdout or sys.stdout
+    #stderr = stderr or sys.stderr
 
-    pass
-
-
-def sudo_execute(command, **kwargs):
-    command = "sudo %s" % command
-    return bash_execute(command, **kwargs)
+    print("$ %s" % command)
+    c = subprocess.call(command, shell=True,
+                        stdout=stdout, stderr=stderr)
+    return c
 
 
 def file_delete(filename, **kwargs):

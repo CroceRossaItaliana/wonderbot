@@ -187,9 +187,9 @@ class Environment(models.Model):
 
     def _postgres_generate_credentials(self):
         username = random_username(8)
-        self.db_name = "staging_%s" + username
-        self.db_user = "staging_%s" + username
-        self.db_user = random_password(24)
+        self.db_name = "staging_%s" % username
+        self.db_user = "staging_%s" % username
+        self.db_pass = random_password(24)
         self.save()
 
     def _django_apply_migrations(self):

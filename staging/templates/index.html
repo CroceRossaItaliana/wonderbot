@@ -34,6 +34,27 @@
 
             {% endfor %}
         </table>
+        <p>&nbsp;</p>
+
+        <h2>Allowed Repositories</h2>
+        <p>Only requests from repositories in this list will be processed, and will be assigned a staging environment.</p>
+        <table border="1">
+            <thead>
+            <th>Repository</th>
+            <th>Allowed by</th>
+            <th>Created</th>
+            </thead>
+            {% for repo in repositories %}
+                <tr>
+                    <td>{{ repo.url }}</td>
+                    <td>{{ repo.allowed_by }}</td>
+                    <td>{{ repo.created|date }}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+        <p>&nbsp;</p>
+
 
     </body>
 </html>

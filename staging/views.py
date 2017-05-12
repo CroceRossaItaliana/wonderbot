@@ -4,11 +4,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-from staging.models import Environment
+from staging.models import Environment, AllowedRepository
 
 
 def index(request):
-    context = {"environments": Environment.objects.all()}
+    context = {"environments": Environment.objects.all(),
+               "repositories": AllowedRepository.objects.all()}
     return render(request, "index.html", context)
 
 
@@ -39,6 +40,9 @@ def github_hook(request):
         branch = data["pull_request"]["head"]["ref"]
         sha = data["pull_request"]["head"]["sha"]
 
+        if not AllowedRepository.objects.filter(url=repo).exists():
+            return HttpResponse("Repository %s is not allowed. Ignored." % (repo,))
+
         if action in ["opened", "reopened"]:
             return _do_opened_pull_request(number, repo, branch, sha)
 
@@ -66,8 +70,6 @@ def _do_opened_pull_request(number, repo, branch, sha):
     """
     React to a new pull request being opened.
     """
-
-    # TODO check if repository is in list of allowed repositories!
 
     name = _environment_name_for_pr(number)
     environment = Environment(name=name, status=Environment.CREATING,

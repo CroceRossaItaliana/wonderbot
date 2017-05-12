@@ -139,6 +139,9 @@ class Environment(models.Model):
                          DB_DUMP_WORKERS, DB_DUMP_FILENAME))
         self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
         self._postgres_cmd("ALTER DATABASE %s OWNER TO %s;" % (self.db_name, self.db_user))
+        self._postgres_cmd("GRANT ALL ON ALL TABLES IN SCHEMA public TO %s;" % (self.db_user,), database=self.db_name)
+        self._postgres_cmd("GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO %s;" % (self.db_user,), database=self.db_name)
+        self._postgres_cmd("GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO %s;" % (self.db_user,), database=self.db_name)
 
     def _database_delete(self):
         if not self.db_user:

@@ -38,9 +38,9 @@ class Environment(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     # Database info
-    db_name = models.CharField(blank=True, max_length=64)
-    db_user = models.CharField(blank=True, max_length=64)
-    db_pass = models.CharField(blank=True, max_length=64)
+    db_name = models.CharField(blank=True, null=True, max_length=64)
+    db_user = models.CharField(blank=True, null=True, max_length=64)
+    db_pass = models.CharField(blank=True, null=True, max_length=64)
 
     def host(self):
         return "%s.%s" % (self.name, HIGH_LEVEL_DOMAIN)
@@ -56,6 +56,12 @@ class Environment(models.Model):
         self.save()
         from wonderbot.celery import environment_create
         environment_create.delay(self)
+
+    def queue_for_recreation(self):
+        self.status = self.CREATING
+        self.save()
+        from wonderbot.celery import environment_recreate
+        environment_recreate.delay(self)
 
     def queue_for_deletion(self):
         self.status = self.DELETING
@@ -98,10 +104,11 @@ class Environment(models.Model):
         self._django_collect_static()
         self.do_refresh()
 
-    def do_delete(self):
+    def do_delete(self, delete_object=True):
         self._nginx_delete()
         self._database_delete()
-        self.delete()
+        if delete_object:
+            self.delete()
 
     def _nginx_delete(self):
         self._delete_nginx_root()

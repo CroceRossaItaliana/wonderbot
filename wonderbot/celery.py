@@ -21,6 +21,12 @@ def environment_create(self, environment):
 
 
 @app.task(bind=True)
+def environment_recreate(self, environment):
+    environment.do_delete(delete_object=False)
+    environment.do_creation()
+
+
+@app.task(bind=True)
 def environment_refresh(self, environment):
     environment.do_refresh()
 

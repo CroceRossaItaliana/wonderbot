@@ -229,3 +229,10 @@ class Environment(models.Model):
 
     def _create_nginx_static(self):
         cmd.dir_create(self._get_nginx_static())
+
+
+class AllowedRepository(models.Model):
+    url = models.CharField(blank=False, null=False, max_length=128, db_index=True, unique=True)
+    allowed_by = models.CharField(blank=False, null=False, max_length=128)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)

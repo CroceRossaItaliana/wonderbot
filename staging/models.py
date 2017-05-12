@@ -130,11 +130,14 @@ class Environment(models.Model):
         self._postgres_cmd("CREATE DATABASE %s;" % self.db_name)
         self._postgres_cmd("CREATE USER %s WITH PASSWORD '%s';" % (self.db_user, self.db_pass))
         self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
+        self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, "staging"))
+        self._postgres_cmd("FLUSH PRIVILEGES;" % (self.db_name, "staging"))
         self._postgres_import_dump()
 
     def _postgres_import_dump(self):
-        cmd.bash_execute("PGPASSWORD=%s pg_restore -d %s -U %s -j %d %s" % (
-                         self.db_pass, self.db_name, self.db_user, DB_DUMP_WORKERS, DB_DUMP_FILENAME))
+        cmd.bash_execute("pg_restore -d %s -U %s -j %d %s" % (
+                         self.db_name, "staging",
+                         DB_DUMP_WORKERS, DB_DUMP_FILENAME))
 
     def _database_delete(self):
         if not self.db_user:

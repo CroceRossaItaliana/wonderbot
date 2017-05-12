@@ -24,6 +24,8 @@ def file_delete(filename, **kwargs):
 
 def file_write(filename, contents, mode="wt"):
     with open(filename, mode=mode) as f:
+        print("~ %s" % filename)
+        print(contents)
         return f.write(contents)
 
 

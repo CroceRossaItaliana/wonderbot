@@ -19,6 +19,7 @@ def github_token():
 def github_commit_status(sha, state, description, url):
     token = github_token()
     if not token:
+        print("# Token not found.")
         return
 
     assert state in ('success', 'pending', 'error', 'failure')
@@ -28,7 +29,9 @@ def github_commit_status(sha, state, description, url):
                           "context": "wonderbot-pr",
                           "url": url})
     headers = {"Authorization": "token %s" % token,}
-    requests.post(url, data=payload, headers=headers)
+    r = requests.post(url, data=payload, headers=headers)
+    print("# %s %s %s" % (url, headers, payload))
+    print(r)
 
 
 def github_pending(sha):

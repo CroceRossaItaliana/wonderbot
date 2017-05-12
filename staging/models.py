@@ -94,6 +94,7 @@ class Environment(models.Model):
 
     def do_refresh(self):
         self._database_refresh()
+        self._jorvik_configure()
         self._django_apply_migrations()
         self._uwsgi_touch()
         self.status = self.ACTIVE

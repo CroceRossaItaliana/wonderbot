@@ -91,14 +91,16 @@ def _do_push(repo, branch, sha):
     """
     React to commits being pushed to a branch.
     """
-    environment = Environment.objects.filter(repository=repo, branch=branch).first()
-    if not environment:
+    environments = Environment.objects.filter(repository=repo, branch=branch)
+    if not environments.exists():
         return HttpResponse("Ignoring, no environment found for repo %s and branch %s." % (repo, branch),
                             content_type="text/plain")
 
-    environment.sha = sha
-    environment.save()
-    environment.queue_for_update()
+    for environment in environments:
+        environment.sha = sha
+        environment.save()
+        environment.queue_for_update()
+
     return HttpResponse("OK", content_type="text/plain")
 
 

@@ -1,6 +1,7 @@
 from django.db import models
 
 import staging.cmd as cmd
+from staging.github import github_finished
 from staging.utils import random_username, random_password
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
@@ -91,6 +92,7 @@ class Environment(models.Model):
         self._uwsgi_touch()
         self.status = self.ACTIVE
         self.save()
+        github_finished(self)
 
     def do_refresh(self):
         self._database_refresh()
@@ -104,6 +106,7 @@ class Environment(models.Model):
         self._git_pull()
         self._django_collect_static()
         self.do_refresh()
+        github_finished(self)
 
     def do_delete(self, delete_object=True):
         self._nginx_delete()
@@ -231,7 +234,7 @@ class Environment(models.Model):
     def _create_nginx_static(self):
         cmd.dir_create(self._get_nginx_static())
 
-    def _get_display_class(self):
+    def get_display_class(self):
         return {self.ACTIVE: "",
                 self.CREATING: "warning",
                 self.DELETING: "error danger",

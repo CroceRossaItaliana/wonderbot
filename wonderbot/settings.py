@@ -124,7 +124,10 @@ STATIC_ROOT = 'static/'
 
 
 DEFAULT_REPOSITORY_URL = "git@github.com:CroceRossaItaliana/jorvik.git"
+DEFAULT_REPOSITORY = "CroceRossaItaliana/jorvik"
 DEFAULT_BRANCH = "master"
+
+HOME_URL = "http://wonderbot.sviluppo-gaia.ovh"
 
 HIGH_LEVEL_DOMAIN = "sviluppo-gaia.ovh"
 

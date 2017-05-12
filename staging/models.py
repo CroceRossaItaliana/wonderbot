@@ -137,6 +137,7 @@ class Environment(models.Model):
         self._postgres_cmd("DROP DATABASE %s;" % (self.db_name,))
 
     def _jorvik_configure(self):
+        # Write database configuration
         configuration = "[client]\n" \
                         "host = localhost\n" \
                         "port = 5432\n" \
@@ -148,6 +149,17 @@ class Environment(models.Model):
         }
         cmd.file_write("%s/config/pgsql.cnf" % self._get_nginx_root(),
                        configuration)
+
+        # Write uwsgi.ini file
+        uwsgi_ini = "[uwsgi]\n" \
+                    "plugins = python3\n" \
+                    "module = jorvik.wsgi:application\n" \
+                    "virtualenv = %d/.venv\n" \
+                    "chdir = %d\n" \
+                    "processes = 4\n" \
+                    "threads = 2\n" \
+                    "vacuum = True\n"
+        cmd.file_write("%s/uwsgi.ini" % self._get_nginx_root(), uwsgi_ini)
 
     def _uwsgi_touch(self):
         cmd.bash_execute("touch uwsgi.ini", cwd=self._get_nginx_root())

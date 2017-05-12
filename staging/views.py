@@ -1,10 +1,12 @@
 import json
 
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from staging.models import Environment
 
 
+@csrf_exempt
 def github_hook(request):
     """
     Handles all GitHub requests.

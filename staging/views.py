@@ -23,7 +23,7 @@ def github_hook(request):
     # See https://developer.github.com/webhooks/securing/
 
     event = request.META["HTTP_X_GITHUB_EVENT"]
-    data = json.loads(request.body)
+    data = json.loads(request.body.decode('utf-8'))
 
     if event == "pull_request":
 

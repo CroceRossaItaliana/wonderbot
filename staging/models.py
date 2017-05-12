@@ -85,9 +85,9 @@ class Environment(models.Model):
         self._git_clone()
         self._python_venv_setup()
         self._database_create()
+        self._jorvik_configure()
         self._django_apply_migrations()
         self._django_collect_static()
-        self._jorvik_configure()
         self._uwsgi_touch()
         self.status = self.ACTIVE
         self.save()
@@ -137,6 +137,7 @@ class Environment(models.Model):
         cmd.bash_execute("pg_restore -d %s -U %s -j %d %s" % (
                          self.db_name, "staging",
                          DB_DUMP_WORKERS, DB_DUMP_FILENAME))
+        self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
 
     def _database_delete(self):
         if not self.db_user:

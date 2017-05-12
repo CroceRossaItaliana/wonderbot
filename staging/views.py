@@ -1,9 +1,15 @@
 import json
 
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from staging.models import Environment
+
+
+def index(request):
+    context = {"environments": Environment.objects.all()}
+    return render(request, "index.html", context)
 
 
 @csrf_exempt

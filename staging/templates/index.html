@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>Staging Environments</title>
+        <style>
+            .body {
+                padding: 10px;
+                font-family: 'Bitstream Vera Sans', 'Trebuchet MS', Sans-Serif;
+                color: #222;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Staging Environments</h2>
+        <table border="1">
+            <thead>
+            <th>Name</th>
+            <th>Repository</th>
+            <th>Branch</th>
+            <th>Last commit</th>
+            <th>Status</th>
+            <th>URL</th>
+            </thead>
+            {% for environment in environments %}
+                <tr>
+                    <td>{{ environment.name }}</td>
+                    <td>{{ environment.repository }}</td>
+                    <td><code>{{ environment.branch }}</code></td>
+                    <td><code>{{ environment.sha }}</code></td>
+                    <td>{{ environment.get_status_display }}</td>
+                    <td><a href="{{ environment.url }}" target="_new">
+                        {{ environment.url }}
+                    </a></td>
+                </tr>
+
+            {% endfor %}
+        </table>
+
+    </body>
+</html>

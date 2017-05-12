@@ -25,7 +25,7 @@ SECRET_KEY = '#=q@gq3@5y+9t4gwozc054hi_fe*-px300ktz5h588qujm#5(@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['wonderbot.sviluppo-gaia.ovh',]
+ALLOWED_HOSTS = ['localhost', 'wonderbot.sviluppo-gaia.ovh',]
 
 
 # Application definition

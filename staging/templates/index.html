@@ -14,51 +14,54 @@
 
     </head>
     <body>
-        <h2>Staging Environments</h2>
-        <table class="table table-striped">
-            <thead>
-            <th>Name</th>
-            <th>Repository</th>
-            <th>Branch</th>
-            <th>Last commit</th>
-            <th>Status</th>
-            <th>URL</th>
-            </thead>
-            {% for environment in environments %}
-                <tr class="{{ environment.get_display_class }}">
-                    <td>{{ environment.name }}</td>
-                    <td>{{ environment.repository }}</td>
-                    <td><code>{{ environment.branch }}</code></td>
-                    <td><code>{{ environment.sha }}</code></td>
-                    <td>{{ environment.get_status_display }}</td>
-                    <td><a href="{{ environment.url }}" target="_new">
-                        {{ environment.url }}
-                    </a></td>
-                </tr>
+        <div class="container">
 
-            {% endfor %}
-        </table>
-        <p>&nbsp;</p>
+            <h2>Staging Environments</h2>
+            <table class="table table-striped">
+                <thead>
+                <th>Name</th>
+                <th>Repository</th>
+                <th>Branch</th>
+                <th>Last commit</th>
+                <th>Status</th>
+                <th>URL</th>
+                </thead>
+                {% for environment in environments %}
+                    <tr class="{{ environment.get_display_class }}">
+                        <td>{{ environment.name }}</td>
+                        <td>{{ environment.repository }}</td>
+                        <td><code>{{ environment.branch }}</code></td>
+                        <td><code>{{ environment.sha }}</code></td>
+                        <td>{{ environment.get_status_display }}</td>
+                        <td><a href="{{ environment.url }}" target="_new">
+                            {{ environment.url }}
+                        </a></td>
+                    </tr>
 
-        <h2>Allowed Repositories</h2>
-        <p>Only requests from repositories in this list will be processed, and will be assigned a staging environment.</p>
-        <table border="1">
-            <thead>
-            <th>Repository</th>
-            <th>Allowed by</th>
-            <th>Created</th>
-            </thead>
-            {% for repo in repositories %}
-                <tr>
-                    <td>{{ repo.url }}</td>
-                    <td>{{ repo.allowed_by }}</td>
-                    <td>{{ repo.created|date }}</td>
-                </tr>
+                {% endfor %}
+            </table>
+            <p>&nbsp;</p>
 
-            {% endfor %}
-        </table>
-        <p>&nbsp;</p>
+            <h2>Allowed Repositories</h2>
+            <p>Only requests from repositories in this list will be processed, and will be assigned a staging environment.</p>
+            <table class="table table-striped">
+                <thead>
+                <th>Repository</th>
+                <th>Allowed by</th>
+                <th>Created</th>
+                </thead>
+                {% for repo in repositories %}
+                    <tr>
+                        <td>{{ repo.url }}</td>
+                        <td>{{ repo.allowed_by }}</td>
+                        <td>{{ repo.created|date }}</td>
+                    </tr>
 
+                {% endfor %}
+            </table>
+            <p>&nbsp;</p>
+
+        </div>
 
     </body>
 </html>

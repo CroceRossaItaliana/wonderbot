@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from staging.models import Environment, AllowedRepository
+from staging.utils import get_branch_name_from_ref
 
 
 def index(request):
@@ -37,7 +38,7 @@ def github_hook(request):
         action = data["action"]
         number = data["number"]
         repo = data["pull_request"]["head"]["repo"]["ssh_url"]
-        branch = data["pull_request"]["head"]["ref"]
+        branch = get_branch_name_from_ref(data["pull_request"]["head"]["ref"])
         sha = data["pull_request"]["head"]["sha"]
 
         if not AllowedRepository.objects.filter(url=repo).exists():
@@ -56,7 +57,7 @@ def github_hook(request):
     elif event == "push":
 
         repo = data["repository"]["ssh_url"]
-        branch = data["ref"]
+        branch = get_branch_name_from_ref(data["ref"])
         sha = data["after"]
 
         return _do_push(repo, branch, sha)

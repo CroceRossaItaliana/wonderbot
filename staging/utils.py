@@ -12,3 +12,9 @@ def random_password(l):
 
 def random_username(l):
     return random_alphanumerical_string(string.ascii_lowercase, l)
+
+
+def get_branch_name_from_ref(ref):
+    if '/' not in ref:
+        return ref
+    return ref.split('/')[2]

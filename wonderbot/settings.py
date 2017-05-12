@@ -25,7 +25,7 @@ SECRET_KEY = '#=q@gq3@5y+9t4gwozc054hi_fe*-px300ktz5h588qujm#5(@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wonderbot.sviluppo-gaia.ovh',]
 
 
 # Application definition
@@ -120,12 +120,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static/'
 
 
 DEFAULT_REPOSITORY_URL = "git@github.com:CroceRossaItaliana/jorvik.git"
 DEFAULT_BRANCH = "master"
 
-HIGH_LEVEL_DOMAIN = "staging.sviluppo-gaia.ovh"
+HIGH_LEVEL_DOMAIN = "sviluppo-gaia.ovh"
 
 UWSGI_SOCKETS_PATH = "/tmp"
 

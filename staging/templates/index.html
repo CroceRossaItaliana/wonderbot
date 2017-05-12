@@ -8,14 +8,14 @@
                 color: #222;
             }
         </style>
-        
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     </head>
     <body>
         <h2>Staging Environments</h2>
-        <table border="1">
+        <table class="table table-striped">
             <thead>
             <th>Name</th>
             <th>Repository</th>
@@ -25,7 +25,7 @@
             <th>URL</th>
             </thead>
             {% for environment in environments %}
-                <tr>
+                <tr class="{{ environment.get_display_class }}">
                     <td>{{ environment.name }}</td>
                     <td>{{ environment.repository }}</td>
                     <td><code>{{ environment.branch }}</code></td>

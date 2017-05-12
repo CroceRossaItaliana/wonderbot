@@ -230,6 +230,13 @@ class Environment(models.Model):
     def _create_nginx_static(self):
         cmd.dir_create(self._get_nginx_static())
 
+    def _get_display_class(self):
+        return {self.ACTIVE: "",
+                self.CREATING: "warning",
+                self.DELETING: "error danger",
+                self.UPDATING: "warning",
+                self.REFRESHING: "warning",}[self.status]
+
 
 class AllowedRepository(models.Model):
     url = models.CharField(blank=False, null=False, max_length=128, db_index=True, unique=True)

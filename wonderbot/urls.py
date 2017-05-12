@@ -19,7 +19,7 @@ import staging.views as staging
 
 
 urlpatterns = [
-    url(r'^', staging.index),
     url(r'^hook/', staging.github_hook),
+    url(r'^', staging.index),
     url(r'^admin/', admin.site.urls),
 ]

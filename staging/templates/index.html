@@ -39,7 +39,7 @@
                             <td style="font-weight: bold;">{{ environment.name }}</td>
                             <td style="font-size: smaller;">{{ environment.repository }}</td>
                             <td>{{ environment.branch }}</td>
-                            <td><code style="font-size: smaller;">{{ environment.sha }}</code></td>
+                            <td><code style="font-size: smaller;">{{ environment.short_sha }}</code></td>
                             <td style="font-weight: bold;">
 
                                 {% if environment.status == environment.ACTIVE %}

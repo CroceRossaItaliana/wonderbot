@@ -43,6 +43,10 @@ class Environment(models.Model):
     db_user = models.CharField(blank=True, null=True, max_length=64)
     db_pass = models.CharField(blank=True, null=True, max_length=64)
 
+    @property
+    def short_sha(self):
+        return self.sha[:8]
+
     def host(self):
         return "%s.%s" % (self.name, HIGH_LEVEL_DOMAIN)
 

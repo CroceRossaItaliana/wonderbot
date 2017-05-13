@@ -10,6 +10,25 @@ from staging.utils import get_branch_name_from_ref
 
 
 def index(request):
+
+    if request.POST:
+
+        ids = request.POST.getlist('environment_ids', default=[])
+        ids = [int(x) for x in ids]
+        selection = Environment.objects.filter(pk__in=ids)
+
+        if request.POST["action"] == "refresh":
+            [e.queue_for_refresh() for e in selection]
+
+        elif request.POST["action"] == "update":
+            [e.queue_for_update() for e in selection]
+
+        elif request.POST["action"] == "recreate":
+            [e.queue_for_recreation() for e in selection]
+
+        elif request.POST["action"] == "delete":
+            [e.queue_for_deletion() for e in selection]
+
     context = {"environments": Environment.objects.all(),
                "repositories": AllowedRepository.objects.all()}
     return render(request, "index.html", context)

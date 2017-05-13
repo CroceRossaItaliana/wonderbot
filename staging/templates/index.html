@@ -11,55 +11,116 @@
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="https://use.fontawesome.com/59f190f7ed.js"></script>
 
     </head>
     <body>
         <div class="container">
 
-            <h2>Staging Environments</h2>
-            <table class="table table-striped">
-                <thead>
-                <th>Name</th>
-                <th>Repository</th>
-                <th>Branch</th>
-                <th>Last commit</th>
-                <th>Status</th>
-                <th>URL</th>
-                </thead>
-                {% for environment in environments %}
-                    <tr class="{{ environment.get_display_class }}">
-                        <td style="font-weight: bold;">{{ environment.name }}</td>
-                        <td>{{ environment.repository }}</td>
-                        <td><code>{{ environment.branch }}</code></td>
-                        <td style="font-size: smaller;"><code>{{ environment.sha }}</code></td>
-                        <td>{{ environment.get_status_display }}</td>
-                        <td><a href="{{ environment.url }}" target="_new">
-                            {{ environment.url }}
-                        </a></td>
-                    </tr>
+            <h2><i class="glyphicon glyphicon-hdd"></i> Staging Environments</h2>
+            <form method="POST">
+                {% csrf_token %}
 
-                {% endfor %}
-            </table>
+                <table class="table table-striped table-condensed">
+                    <thead>
+                    <th>&nbsp;</th>
+                    <th>Name</th>
+                    <th>Repository</th>
+                    <th>Branch</th>
+                    <th>Commit</th>
+                    <th>Status</th>
+                    <th>URL</th>
+                    </thead>
+                    {% for environment in environments %}
+                        <tr class="{{ environment.get_display_class }}">
+                            <td>
+                                <input type="checkbox" name="environment_ids" value="{{ environment.pk }}" />
+                            </td>
+                            <td style="font-weight: bold;">{{ environment.name }}</td>
+                            <td style="font-size: smaller;">{{ environment.repository }}</td>
+                            <td>{{ environment.branch }}</td>
+                            <td><code style="font-size: smaller;">{{ environment.sha }}</code></td>
+                            <td style="font-weight: bold;">
+
+                                {% if environment.status == environment.ACTIVE %}
+                                    <i class="fa fa-fw fa-check"></i>
+
+                                {% else %}
+                                    <i class="fa fa-fw fa-spinner fa-spin"></i>
+
+                                {% endif %}
+
+                                {{ environment.get_status_display }}
+                            </td>
+                            <td><a href="{{ environment.url }}" target="_new">
+                                {{ environment.url }}
+                            </a></td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+
+                <h4><i class="glyphicon glyphicon-wrench"></i> Actions</h4>
+                <p>
+
+                    <button type="submit" name="action" value="refresh"
+                            class="btn btn-primary">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                        Refresh database
+                    </button>
+
+                    <button type="submit" name="action" value="update"
+                            class="btn btn-primary">
+                        <i class="glyphicon glyphicon-download"></i>
+                        Update from GIT (and refresh)
+                    </button>
+
+                    <button type="submit" name="action" value="recreate"
+                            class="btn btn-warning">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                        Recreate environment(s)
+                    </button>
+
+                    <button type="submit" name="action" value="delete"
+                            class="btn btn-danger"
+                            onclick="return confirm('This action cannot be undone. Do you wish to proceed?');">
+                        <i class="glyphicon glyphicon-trash"></i>
+                        Delete environment(s)
+                    </button>
+
+                </p>
+
+            </form>
+
             <p>&nbsp;</p>
+            <hr />
 
-            <h2>Allowed Repositories</h2>
-            <p>Only requests from repositories in this list will be processed, and will be assigned a staging environment.</p>
-            <table class="table table-striped">
+            <h2><i class="glyphicon glyphicon-certificate"></i> Trusted Repositories</h2>
+            <p>Only pull requests from repositories in this list will be processed, and will be assigned a staging environment.</p>
+            <table class="table table-striped table-condensed">
                 <thead>
                 <th>Repository</th>
-                <th>Allowed by</th>
+                <th>Added by</th>
                 <th>Created</th>
                 </thead>
                 {% for repo in repositories %}
+
                     <tr>
                         <td>{{ repo.url }}</td>
                         <td>{{ repo.allowed_by }}</td>
-                        <td>{{ repo.created|date }}</td>
+                        <td>{{ repo.created|date:"DATETIME_FORMAT" }}</td>
                     </tr>
 
                 {% endfor %}
             </table>
+
             <p>&nbsp;</p>
+            <hr />
+
+            <p class="text-muted">
+                <strong>Croce Rossa Italiana.</strong> Il Progetto Gaia.<br />
+                Wonderbot is open-source software, and is available on <a href="https://github.com/CroceRossaItaliana/wonderbot">GitHub</a>.
+            </p>
 
         </div>
 

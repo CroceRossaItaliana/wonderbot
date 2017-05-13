@@ -34,7 +34,9 @@
                     {% for environment in environments %}
                         <tr class="{{ environment.get_display_class }}">
                             <td>
-                                <input type="checkbox" name="environment_ids" value="{{ environment.pk }}" />
+                                <input type="checkbox" name="environment_ids" value="{{ environment.pk }}"
+                                        {% if not environment.status == environment.ACTIVE %}disabled="disabled"{% endif %}
+                                />
                             </td>
                             <td style="font-weight: bold;">{{ environment.name }}</td>
                             <td style="font-size: smaller;">{{ environment.repository }}</td>

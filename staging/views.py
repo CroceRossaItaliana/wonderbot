@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from staging.github import github_commit_status, github_pending
 from staging.models import Environment, AllowedRepository
 from staging.utils import get_branch_name_from_ref
+from wonderbot.settings import HOME_URL
 
 
 def index(request):
@@ -40,7 +41,8 @@ def index(request):
             e.queue_for_creation()
 
     context = {"environments": Environment.objects.all(),
-               "repositories": AllowedRepository.objects.all()}
+               "repositories": AllowedRepository.objects.all(),
+               "hook_url": "%s/hook/" % HOME_URL}
     return render(request, "index.html", context)
 
 

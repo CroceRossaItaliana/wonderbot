@@ -29,6 +29,16 @@ def index(request):
         elif request.POST["action"] == "delete":
             [e.queue_for_deletion() for e in selection]
 
+        if request.POST["action"] == "create":
+            name = request.POST["name"].lower().strip()
+            repo_id = int(request.POST["repo_id"])
+            repo = AllowedRepository.objects.get(pk=repo_id)
+            branch = request.POST["branch"].strip()
+            e = Environment(name=name, repository=repo.url, branch=branch,
+                            sha="N/D")
+            e.save()
+            e.queue_for_creation()
+
     context = {"environments": Environment.objects.all(),
                "repositories": AllowedRepository.objects.all()}
     return render(request, "index.html", context)

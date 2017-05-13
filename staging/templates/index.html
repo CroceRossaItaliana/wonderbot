@@ -89,6 +89,39 @@
                     </button>
 
                 </p>
+                <p>&nbsp;</p>
+
+                <h4><i class="glyphicon glyphicon-plus"></i> Create environment</h4>
+                <p>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                          <input type="text" name="name" class="form-control" placeholder="Name (e.g. luke)"
+                                 maxlength="16" pattern="[a-z0-9\-]+" />
+                        </div>
+                        <div class="col-md-4">
+                          <select name="repo_id" class="form-control">
+                              {% for r in repositories %}
+                                <option value="{{ r.pk }}">{{ r.url }}</option>
+                              {% endfor %}
+                          </select>
+                        </div>
+                        <div class="col-md-2">
+                          <input type="text" name="branch" class="form-control" placeholder="Branch (e.g. master)"
+                                 maxlength="16" pattern="[a-z0-9\-]+" />
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" name="action" value="create"
+                                    class="btn btn-success btn-block">
+                                <i class="glyphicon glyphicon-new"></i>
+                                Create new environment
+                            </button>
+                        </div>
+
+
+                    </div>
+
+                </p>
 
             </form>
 

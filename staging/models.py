@@ -144,9 +144,8 @@ class Environment(models.Model):
         self._postgres_import_dump()
 
     def _postgres_import_dump(self):
-        cmd.bash_execute("PGPASSWORD=%s pg_restore -Fc -d %s -U %s -j %d "
-                         "--no-owner --no-privileges -h localhost %s" % (
-                         self.db_pass, self.db_name, self.db_user,
+        cmd.bash_execute("pg_restore -Fc -d %s -U %s -j %d --no-owner --no-privileges %s" % (
+                         self.db_name, "staging",
                          DB_DUMP_WORKERS, DB_DUMP_FILENAME))
         self._postgres_cmd("GRANT ALL PRIVILEGES ON DATABASE %s TO %s;" % (self.db_name, self.db_user))
         self._postgres_cmd("ALTER DATABASE %s OWNER TO %s;" % (self.db_name, self.db_user))
@@ -158,6 +157,12 @@ class Environment(models.Model):
         self._postgres_cmd("GRANT ALL ON ALL SEQUENCES IN SCHEMA information_schema TO %s;" % (self.db_user,), database=self.db_name)
         self._postgres_cmd("GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO %s;" % (self.db_user,), database=self.db_name)
         self._postgres_cmd("GRANT ALL ON ALL FUNCTIONS IN SCHEMA information_schema TO %s;" % (self.db_user,), database=self.db_name)
+        # Generate ALTER TABLE ... OWNER TO query for each of the tables in the 'public' schema
+        cmd.bash_execute("psql %s -c \"SELECT 'ALTER TABLE '|| schemaname || '.' || tablename ||' OWNER TO %s;' "
+                                      "FROM pg_tables WHERE NOT schemaname IN ('pg_catalog', 'information_schema') "    
+                                      "ORDER BY schemaname, tablename;\" "
+                         "| cat | grep \"ALTER TABLE\" | "
+                         "psql %s" % (self.db_name, self.db_user, self.db_name))
 
     def _database_delete(self):
         if not self.db_user:

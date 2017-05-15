@@ -163,6 +163,9 @@ class Environment(models.Model):
                                       "ORDER BY schemaname, tablename;\" "
                          "| cat | grep \"ALTER TABLE\" | "
                          "psql %s" % (self.db_name, self.db_user, self.db_name))
+        # Run VACUUM commands to optimise space utilisation
+        self._postgres_cmd("VACUUM;", database=self.db_name)
+        self._postgres_cmd("VACUUM FULL;", database=self.db_name)
 
     def _database_delete(self):
         if not self.db_user:
@@ -170,6 +173,10 @@ class Environment(models.Model):
         self._postgres_cmd("REVOKE ALL ON DATABASE %s FROM %s;" % (self.db_name, self.db_user))
         self._postgres_cmd("DROP DATABASE %s;" % (self.db_name,))
         self._postgres_cmd("DROP USER %s;" % (self.db_user,))
+        # Make sure to free up disk space immediately
+        self._postgres_cmd("VACUUM;")
+        self._postgres_cmd("VACUUM FULL;")
+
 
     def _jorvik_configure(self):
         # Write database configuration

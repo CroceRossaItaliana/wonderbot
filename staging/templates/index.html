@@ -32,15 +32,15 @@
                     <th>URL</th>
                     </thead>
                     {% for environment in environments %}
-                        <tr class="{{ environment.get_display_class }}">
+                        <tr class="{{ environment.get_display_class }}" style="font-size: smaller !important;">
                             <td>
                                 <input type="checkbox" name="environment_ids" value="{{ environment.pk }}"
                                         {% if not environment.status == environment.ACTIVE %}disabled="disabled"{% endif %}
                                 />
                             </td>
                             <td style="font-weight: bold;">{{ environment.name }}</td>
-                            <td style="font-size: smaller;">{{ environment.repository }}</td>
-                            <td style="font-size: smaller; font-weight: bold;">{{ environment.branch }}</td>
+                            <td>{{ environment.repository }}</td>
+                            <td style="font-weight: bold;">{{ environment.branch }}</td>
                             <td><code style="font-size: smaller;">{{ environment.short_sha }}</code></td>
                             <td style="font-weight: bold;">
 

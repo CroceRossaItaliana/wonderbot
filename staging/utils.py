@@ -15,6 +15,6 @@ def random_username(l):
 
 
 def get_branch_name_from_ref(ref):
-    if '/' not in ref:
+    if ref.count('/') < 2:
         return ref
     return ref.split('/')[2]

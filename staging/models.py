@@ -168,6 +168,7 @@ class Environment(models.Model):
         if not self.db_user:
             return
         self._postgres_cmd("REVOKE ALL ON DATABASE %s FROM %s;" % (self.db_name, self.db_user))
+        self._postgres_restart()
         self._postgres_cmd("DROP DATABASE %s;" % (self.db_name,))
         self._postgres_cmd("DROP USER %s;" % (self.db_user,))
 
@@ -228,6 +229,16 @@ class Environment(models.Model):
         self.db_user = "staging_%s" % username
         self.db_pass = random_password(24)
         self.save()
+
+    def _postgres_stop(self):
+        cmd.bash_execute("/usr/bin/sudo /staging/scripts/postgres_stop.sh")
+
+    def _postgres_start(self):
+        cmd.bash_execute("/usr/bin/sudo /staging/scripts/postgres_start.sh")
+
+    def _postgres_restart(self):
+        self._postgres_stop()
+        self._postgres_start()
 
     def _django_apply_migrations(self):
         self._django_cmd("migrate --noinput")

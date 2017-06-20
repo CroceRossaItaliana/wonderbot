@@ -5,7 +5,7 @@ from staging.github import github_finished, github_pending
 from staging.utils import random_username, random_password
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
-    NGINX_ROOTS, DB_DUMP_FILENAME, DB_DUMP_WORKERS, DB_STOP_SCRIPT, SUDO_BIN, DB_START_SCRIPT
+    NGINX_ROOTS, DB_DUMP_FILENAME, DB_DUMP_WORKERS, DB_STOP_SCRIPT, SUDO_BIN, DB_START_SCRIPT, SKELETON_CONFIGURATION
 
 
 class Environment(models.Model):
@@ -178,8 +178,11 @@ class Environment(models.Model):
         self._postgres_cmd("VACUUM;")
         self._postgres_cmd("VACUUM FULL;")
 
-
     def _jorvik_configure(self):
+        # Skeleton configuration
+        cmd.bash_execute("cp -R %s/* %s" % (SKELETON_CONFIGURATION,
+                                            self._get_nginx_root()))
+
         # Write database configuration
         database = "[client]\n" \
                    "host = localhost\n" \

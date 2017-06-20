@@ -144,6 +144,8 @@ SUDO_BIN = "/usr/bin/sudo"
 DB_START_SCRIPT = "/staging/scripts/postgres_stop.sh"
 DB_STOP_SCRIPT = "/staging/scripts/postgres_start.sh"
 
+SKELETON_CONFIGURATION = "/staging/skeleton/"
+
 GITHUB_TOKEN_FILE = "/home/staging/.github_token"
 
 

@@ -139,6 +139,11 @@ NGINX_ROOTS = "/staging"
 DB_DUMP_FILENAME = "/staging/dump"
 DB_DUMP_WORKERS = 8
 
+SUDO_BIN = "/usr/bin/sudo"
+
+DB_START_SCRIPT = "/staging/scripts/postgres_stop.sh"
+DB_STOP_SCRIPT = "/staging/scripts/postgres_start.sh"
+
 GITHUB_TOKEN_FILE = "/home/staging/.github_token"
 
 

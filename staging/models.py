@@ -5,7 +5,7 @@ from staging.github import github_finished, github_pending
 from staging.utils import random_username, random_password
 from staging.validators import validate_environment_name
 from wonderbot.settings import DEFAULT_REPOSITORY_URL, DEFAULT_BRANCH, HIGH_LEVEL_DOMAIN, UWSGI_SOCKETS_PATH, \
-    NGINX_ROOTS, DB_DUMP_FILENAME, DB_DUMP_WORKERS
+    NGINX_ROOTS, DB_DUMP_FILENAME, DB_DUMP_WORKERS, DB_STOP_SCRIPT, SUDO_BIN, DB_START_SCRIPT
 
 
 class Environment(models.Model):
@@ -238,10 +238,10 @@ class Environment(models.Model):
         self.save()
 
     def _postgres_stop(self):
-        cmd.bash_execute("/usr/bin/sudo /staging/scripts/postgres_stop.sh")
+        cmd.bash_execute("%s %s" % (SUDO_BIN, DB_STOP_SCRIPT))
 
     def _postgres_start(self):
-        cmd.bash_execute("/usr/bin/sudo /staging/scripts/postgres_start.sh")
+        cmd.bash_execute("%s %s" % (SUDO_BIN, DB_START_SCRIPT))
 
     def _postgres_restart(self):
         self._postgres_stop()

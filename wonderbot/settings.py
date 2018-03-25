@@ -25,7 +25,7 @@ SECRET_KEY = '#=q@gq3@5y+9t4gwozc054hi_fe*-px300ktz5h588qujm#5(@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'wonderbot.sviluppo-gaia.ovh',]
+ALLOWED_HOSTS = ['localhost', 'wonderbot.gaia.cri.it',]
 
 
 # Application definition
@@ -127,9 +127,9 @@ DEFAULT_REPOSITORY_URL = "git@github.com:CroceRossaItaliana/jorvik.git"
 DEFAULT_REPOSITORY = "CroceRossaItaliana/jorvik"
 DEFAULT_BRANCH = "master"
 
-HOME_URL = "http://wonderbot.sviluppo-gaia.ovh"
+HOME_URL = "http://wonderbot.gaia.cri.it"
 
-HIGH_LEVEL_DOMAIN = "sviluppo-gaia.ovh"
+HIGH_LEVEL_DOMAIN = "wonderbot.gaia.cri.it"
 
 UWSGI_SOCKETS_PATH = "/tmp"
 

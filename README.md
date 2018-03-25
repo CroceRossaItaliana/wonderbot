@@ -1,3 +1,9 @@
+Wonderbot
+=========
+
+How to set up the tool
+----------------------
+
 Required pachages:
 
 * nginx
@@ -6,6 +12,7 @@ Required pachages:
 * celery
 * postgresql
 
+Create a `staging` user that owns the `/staging` folder.
 
 Structure of the folder:
 

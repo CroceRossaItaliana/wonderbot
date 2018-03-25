@@ -4,7 +4,7 @@ Wonderbot
 How to set up the tool
 ----------------------
 
-Required pachages:
+Required packages:
 
 * nginx
 * uwsgi

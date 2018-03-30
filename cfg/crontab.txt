@@ -3,4 +3,9 @@
 
 # user: staging
 ## script to copy database dump daily to /staging/dump
+## TODO
+
+# user: root
+## script to renew letsencrypt certificates
+@daily /usr/bin/certbot renew -n > /var/log/certbot-renew.log 2>&1
 

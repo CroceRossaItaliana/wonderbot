@@ -1,0 +1,6 @@
+# user: staging
+@reboot cd /staging/wonderbot && /usr/local/bin/celery worker -b redis://localhost -A wonderbot > /staging/cele$
+
+# user: staging
+## script to copy database dump daily to /staging/dump
+

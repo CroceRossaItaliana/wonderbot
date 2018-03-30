@@ -1,0 +1,57 @@
+# /etc/nginx/sites-enabled/staging.conf
+
+server {
+
+    server_name wonderbot.gaia.cri.it;
+
+    location /robots.txt {
+                alias /staging/robots.txt;
+        }
+
+    location / {
+                uwsgi_pass unix:/staging/run/wonderbot.sock;
+                uwsgi_connect_timeout 6000;
+                uwsgi_send_timeout 6000;
+                uwsgi_read_timeout 6000;
+                keepalive_timeout 6500;
+                include uwsgi_params;
+    }
+
+}
+
+
+server {
+	listen 80;
+
+        server_name "~^(?<subdomain>.+)\.wonderbot\.gaia\.cri\.it$";
+        access_log /var/log/nginx/uwsgi/access.log;
+        error_log /var/log/nginx/uwsgi/error.log;
+        client_max_body_size 16M;
+
+        location /media/ {
+                root /staging/$subdomain;
+        }
+
+        location /static/ {
+                root /staging/$subdomain;
+        }
+
+        location ~ /.well-known {
+                root /staging/$subdomain/.well-known;
+                allow all;
+        }
+
+        location / {
+                uwsgi_pass unix:/staging/run/$subdomain.sock;
+                uwsgi_connect_timeout 6000;
+                uwsgi_send_timeout 6000;
+                uwsgi_read_timeout 6000;
+                keepalive_timeout 6500;
+                include uwsgi_params;
+        }
+
+        location /robots.txt {
+                alias /staging/robots.txt;
+        }
+
+}

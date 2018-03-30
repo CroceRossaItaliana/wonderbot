@@ -1,0 +1,17 @@
+# /etc/uwsg/apps-enabled/emperor.ini
+
+[uwsgi]
+emperor = /staging/*/uwsgi.ini
+vassals-include = /etc/uwsgi/apps.ini
+master = true
+auto-procname = true
+uid = staging
+gid = staging
+cap = setgid,setuid
+
+
+# /etc/uwsg/apps.ini
+
+[uwsgi]
+
+socket = /staging/run/%C.sock

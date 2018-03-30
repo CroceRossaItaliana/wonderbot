@@ -1,0 +1,9 @@
+# /etc/sudoers.d/wonderbot
+## give permissions to the `staging` user to execute scripts in
+## /staging/scripts without password
+
+staging ALL=(ALL:ALL) NOPASSWD:/staging/scripts/postgres_start.sh
+staging ALL=(ALL:ALL) NOPASSWD:/staging/scripts/postgres_stop.sh
+staging ALL=(ALL:ALL) NOPASSWD:/staging/scripts/copia_backup.sh
+
+

@@ -1,0 +1,7 @@
+# postgresql configuration
+
+$ sudo su
+$ su postgres
+$ psql
+> create user staging with superuser;
+> create database staging owner staging;

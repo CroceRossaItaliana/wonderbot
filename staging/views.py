@@ -82,6 +82,9 @@ def github_hook(request):
         elif action == "closed":
             return _do_closed_pull_request(number)
 
+        elif action == "synchronize":
+            return _do_push(repo, branch, sha)
+        
         else:
             return HttpResponse("%s action on PR %d ignored." % (action, number),
                                 content_type="text/plain")

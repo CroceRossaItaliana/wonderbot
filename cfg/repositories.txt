@@ -1,0 +1,9 @@
+$ su staging
+$ ssh-keygen              # Create a new SSH key
+$ cat ~/.ssh/id_rsa.pub   # Add key as deploy key to repository
+$ cd /staging/wonderbot
+$ python3 manage.py shell
+>>> from staging.models import AllowedRepository
+>>> a = AllowedRepository(url="git@github.com:acarmisciano/jorvik.git",
+...                       allowed_by="Alfio E. Fresta")
+>>> a.save()
